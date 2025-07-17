@@ -6,7 +6,8 @@
 		"useIgnoreFile": false
 	},
 	"files": {
-		"ignoreUnknown": false
+		"ignoreUnknown": false,
+		"includes": ["./prisma/*.prisma"]
 	},
 	"formatter": {
 		"enabled": true,
@@ -28,7 +29,8 @@
 			"quoteStyle": "single",
 			"jsxQuoteStyle": "double",
 			"semicolons": "asNeeded",
-			"trailingCommas": "es5"
+			"trailingCommas": "es5",
+			"lineEnding": "lf"
 		}
 	},
 	"assist": {
