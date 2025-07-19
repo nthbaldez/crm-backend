@@ -1,13 +1,16 @@
-services: 
-  postgres: 
-    container_image: pg-crm-juridico
-    image: postgres
-    ports:
-      - 5432:5432
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_db
+    restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD:
-      POSTGRES_DB: crm-db
-      PGDATA: /data/postgres
+      POSTGRES_PASSWORD: johnny
+      POSTGRES_DB: crmdb
+    ports:
+      - "5432:5432"
     volumes:
-      - ./data/pg:/data/postgres
+      - postgres_data:/data/pg
+
+volumes:
+  postgres_data:
