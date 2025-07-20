@@ -1,8 +1,8 @@
 import { Controller, Post, UseGuards } from '@nestjs/common'
-import { AuthGuard } from '@nestjs/passport'
+import { JwtAuthGuard } from 'src/infra/auth/jwt-auth.guard'
 
 @Controller('/customers')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 export class CreateCustomerController {
 	@Post()
 	async handle() {
