@@ -15,20 +15,21 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
+  id       String     @id @default(uuid())
   name     String
-  email    String @unique
+  email    String     @unique
   password String
+  Customer Customer[]
 
   @@map("users")
 }
 
 model Customer {
-  id    String  @id @default(uuid())
-  name  String
-  email String  @unique
-  phone String
-  age   String?
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  phone     String
+  birthDate DateTime? @map("birth_date")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @map("updated_at")
@@ -42,6 +43,9 @@ model Customer {
   state      String
   country    String
   zipCode    String?
+
+  createdById String
+  createdBy   User   @relation(fields: [createdById], references: [id])
 
   @@map("customers")
 }

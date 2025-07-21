@@ -28,14 +28,8 @@ export class AuthenticateController {
 	@ApiOperation({
 		description: 'Login de usuário na plataforma',
 	})
-	// @ApiResponse({
-	// 	description: 'OK',
-	// 	type: string,
-	// 	status: HttpStatus.OK,
-	// })
 	@Post('/')
 	@HttpCode(201)
-	// @UsePipes(new )
 	async handle(@Body() body: AuthenticateBodySchema) {
 		const { email, password } = body
 
