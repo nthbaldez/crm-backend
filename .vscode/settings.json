@@ -13,6 +13,8 @@
 	"symbols.files.associations": {
 		"*.service.ts": "nest",
 		"*.module.ts": "nest",
-		"*.controler.ts": "nest"
+		"*.controller.ts": "nest",
+		"vitest.config.e2e.ts": "vite",
+		"*.e2e-spec.ts": "ts-test"
 	}
 }

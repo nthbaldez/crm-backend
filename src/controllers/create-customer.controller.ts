@@ -1,10 +1,16 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common'
-import { CurrentUser } from 'src/infra/auth/current-user.decorator'
-import { UserPayloadSchema } from 'src/infra/auth/jwt.strategy'
-import { JwtAuthGuard } from 'src/infra/auth/jwt-auth.guard'
-import { PrismaService } from 'src/infra/database/prisma/prisma.service'
-import { ZodValidationPipe } from 'src/pipes/zod-validation-pipe'
+import {
+	Body,
+	ConflictException,
+	Controller,
+	Post,
+	UseGuards,
+} from '@nestjs/common'
 import z from 'zod'
+import { CurrentUser } from '@/infra/auth/current-user.decorator'
+import { UserPayloadSchema } from '@/infra/auth/jwt.strategy'
+import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
+import { PrismaService } from '@/infra/database/prisma/prisma.service'
+import { ZodValidationPipe } from '@/pipes/zod-validation-pipe'
 
 const createCustomerBodySchema = z.object({
 	name: z.string(),
@@ -48,7 +54,17 @@ export class CreateCustomerController {
 			country,
 			zipCode,
 		} = body
-		// console.log(body)
+
+		const hasAlreadyExistsCustomerWithThisEmail =
+			await this.prisma.customer.findUnique({
+				where: {
+					email,
+				},
+			})
+
+		if (hasAlreadyExistsCustomerWithThisEmail) {
+			throw new ConflictException('E-mail de cliente já existe.')
+		}
 
 		await this.prisma.customer.create({
 			data: {
