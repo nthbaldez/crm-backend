@@ -2,6 +2,7 @@ import {
 	Body,
 	ConflictException,
 	Controller,
+	HttpCode,
 	Post,
 	UseGuards,
 } from '@nestjs/common'
@@ -36,6 +37,7 @@ export class CreateCustomerController {
 	constructor(private prisma: PrismaService) {}
 
 	@Post()
+	@HttpCode(201)
 	async handle(
 		@CurrentUser() user: UserPayloadSchema,
 		@Body(validationPipe) body: CreateCustomerBodySchema
@@ -66,7 +68,7 @@ export class CreateCustomerController {
 			throw new ConflictException('E-mail de cliente já existe.')
 		}
 
-		await this.prisma.customer.create({
+		const customer = await this.prisma.customer.create({
 			data: {
 				name,
 				email,
@@ -82,5 +84,7 @@ export class CreateCustomerController {
 				createdById: sub,
 			},
 		})
+
+		return { customer }
 	}
 }
