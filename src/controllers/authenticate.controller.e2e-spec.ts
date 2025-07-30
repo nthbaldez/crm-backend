@@ -1,10 +1,11 @@
 import { INestApplication } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
+import { hash } from 'bcryptjs'
 import * as request from 'supertest'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { AppModule } from '../app.module'
 
-describe('Create Account Controller (E2E)', () => {
+describe('Authenticate Controller (E2E)', () => {
 	let app: INestApplication
 	let prisma: PrismaService
 
@@ -19,33 +20,36 @@ describe('Create Account Controller (E2E)', () => {
 		await app.init()
 	})
 
-	test('[POST /accounts] Criação de usuário', async () => {
-		const response = await request(app.getHttpServer()).post('/accounts').send({
-			name: 'John Doe',
+	test('[POST /login] Autenticação de Usuário', async () => {
+		const hashedPassword = await hash('123456', 8)
+
+		await prisma.user.create({
+			data: {
+				name: 'John Doe',
+				email: 'johndoe@email.com',
+				password: hashedPassword,
+			},
+		})
+
+		const response = await request(app.getHttpServer()).post('/login').send({
 			email: 'johndoe@email.com',
 			password: '123456',
 		})
 
 		expect(response.statusCode).toBe(201)
-
-		const verifyUserOnDatabase = await prisma.user.findUnique({
-			where: {
-				email: 'johndoe@email.com',
-			},
+		expect(response.body).toEqual({
+			access_token: expect.any(String),
 		})
-
-		expect(verifyUserOnDatabase).toBeTruthy()
 	})
 
-	test('[POST /accounts] Deve retornar status 409', () => {
+	test('[POST /sessions] Deve retornar status 401', () => {
 		return request(app.getHttpServer())
-			.post('/accounts')
+			.post('/login')
 			.send({
-				name: 'John Doe',
 				email: 'johndoe@email.com',
-				password: '123456',
+				password: '1234568888',
 			})
-			.expect(409)
+			.expect(401)
 	})
 
 	afterAll(async () => {
