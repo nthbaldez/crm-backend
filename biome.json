@@ -19,6 +19,9 @@
 		"enabled": true,
 		"rules": {
 			"recommended": true,
+			"suspicious": {
+				"noFocusedTests": "off"
+			},
 			"style": {
 				"useImportType": "off"
 			},
